@@ -6,6 +6,8 @@ import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef.HWND;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Apps {
 
@@ -16,6 +18,10 @@ public class Apps {
             findWindow(codeWalker);
         return codeWalker ? walker : editor;
     }
+
+    public static void resetEditor() { editor = null; }
+
+    public static boolean isClosed() { return walker != null && !User32.INSTANCE.IsWindow(walker.getHWND()); }
 
     private static void findWindow(boolean codeWalker) {
         //System.out.println("CWX | Searching for window (" + (codeWalker ? "CodeWalker" : "Editor") + ")");
@@ -89,5 +95,21 @@ public class Apps {
         int barHeight = matchingPixels + 2;
         System.out.println("CWX | Detected Title Bar Height: " + barHeight);
         return barHeight;
+    }
+
+    public static boolean openCodeWalker() {
+        final String path = "C:\\Users\\Desktop\\Desktop\\CW_dev\\";
+        ProcessBuilder pb = new ProcessBuilder(path + "CodeWalker.exe");
+        pb.directory(new File(path));
+
+        try {
+            pb.start();
+        } catch (IOException e) {
+            //TODO - dialog
+            System.out.println("CWX | Failed to open CodeWalker.exe");
+            return false;
+        }
+
+        return true;
     }
 }

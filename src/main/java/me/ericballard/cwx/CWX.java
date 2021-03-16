@@ -1,6 +1,7 @@
 package me.ericballard.cwx;
 
 import javafx.application.Platform;
+import me.ericballard.cwx.data.Data;
 import me.ericballard.cwx.gui.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -11,8 +12,8 @@ import me.ericballard.cwx.threads.WindowFinder;
 public class CWX extends Application {
 
     // Threads
-    private static WindowFinder windowFinder;
-    private static OverlayPosition overlayPosition;
+    public static final WindowFinder windowFinder = new WindowFinder();
+    public static final OverlayPosition overlayPosition = new OverlayPosition();
 
     // Native Hooks
 
@@ -22,7 +23,7 @@ public class CWX extends Application {
         System.out.println("CWX | Started");
 
         // Init thread to identify CodeWalker windows
-        (windowFinder = new WindowFinder()).start();
+        windowFinder.start();
 
         // Start GUI (launch call is blocking - will idle until parent frame closes)
         launch(args);
@@ -38,18 +39,18 @@ public class CWX extends Application {
 
         // Init GUI
         GUI.get(stage);
-
-        // Init thread to position GUI
-        (overlayPosition = new OverlayPosition()).start();
     }
 
     // Closes threads, etc
-    private static void close() {
+    public static void close() {
+        Data.save();
+
+        Platform.exit();
         windowFinder.interrupt();
         overlayPosition.interrupt();
 
-        Platform.exit();
         System.out.println("CWX | Stopped");
+        System.exit(1);
     }
 
     // Prints stack track to system
