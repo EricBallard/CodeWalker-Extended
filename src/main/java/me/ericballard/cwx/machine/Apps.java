@@ -81,6 +81,8 @@ public class Apps {
             } else {
                 if (matchingPixels > 1)
                     break;
+                else
+                    tempY = y;
             }
         }
 

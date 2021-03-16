@@ -16,6 +16,7 @@ public class GUI {
 
     private static Stage guiStage;
 
+
     public static Stage get() {
         return guiStage;
     }
@@ -24,10 +25,9 @@ public class GUI {
         // Init fxml
         Parent root;
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(GUI.class.getClass().getResource("/Interface.fxml"));
 
         try {
-            root = loader.load();
+            root = loader.load(GUI.class.getClass().getResource("/Interface.fxml"));
         } catch (IOException e) {
             CWX.print(e);
             return;
@@ -37,15 +37,15 @@ public class GUI {
 
         // Init scene and set to transparent
         Scene scene = new Scene(root);
+
         scene.setFill(Color.TRANSPARENT);
         stage.setAlwaysOnTop(true);
 
         stage.setOpacity(0.5);
-        stage.setScene(scene);
-
-        stage.setScene(scene);
         stage.setResizable(true);
         stage.initStyle(StageStyle.TRANSPARENT);
+
+        stage.setScene(scene);
 
         // Cache stage and show
         (guiStage = stage).show();

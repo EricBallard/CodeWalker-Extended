@@ -5,23 +5,17 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 
 public class Controller implements Initializable {
 
     @FXML
-    public AnchorPane anchorPane;
-
-    @FXML
     public GridPane gridPane;
 
-    public Controller() {
-
-    }
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        System.out.println("CWX | GUI Controller Initialized " + anchorPane);
+        System.out.println("CWX | FXML Controller Initialized");
+
     }
 }

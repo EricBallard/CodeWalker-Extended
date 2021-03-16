@@ -1,5 +1,6 @@
 package me.ericballard.cwx;
 
+import javafx.application.Platform;
 import me.ericballard.cwx.gui.GUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -33,6 +34,8 @@ public class CWX extends Application {
     // Start of GUI
     @Override
     public void start(Stage stage) {
+        Platform.setImplicitExit(false);
+
         // Init GUI
         GUI.get(stage);
 
@@ -45,6 +48,7 @@ public class CWX extends Application {
         windowFinder.interrupt();
         overlayPosition.interrupt();
 
+        Platform.exit();
         System.out.println("CWX | Stopped");
     }
 
