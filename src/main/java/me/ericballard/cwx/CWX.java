@@ -5,9 +5,12 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import me.ericballard.cwx.data.Data;
 import me.ericballard.cwx.gui.GUI;
+import me.ericballard.cwx.machine.hooks.key.KeyHook;
+import me.ericballard.cwx.machine.hooks.mouse.MouseHook;
 import me.ericballard.cwx.threads.AutoInteract;
 import me.ericballard.cwx.threads.OverlayPosition;
 import me.ericballard.cwx.threads.WindowFinder;
+
 
 // CodeWalker-Extended
 public class CWX extends Application {
@@ -19,7 +22,10 @@ public class CWX extends Application {
 
     public static final AutoInteract autoInteract = new AutoInteract();
 
-    // Native Hooks
+    // Init global mouse hook (Temporary blocks to ensure perfect automation)
+    public static MouseHook mouseHook = new MouseHook();
+
+    public static KeyHook keyHook = new KeyHook();
 
     // Start of Application
     public static void main(String... args) {
@@ -45,11 +51,14 @@ public class CWX extends Application {
         GUI.get(stage);
     }
 
-    // Closes threads, etc
+    // Save data, close threads, etc
     public static void close() {
         Data.save();
-
         Platform.exit();
+
+        mouseHook.unhook();
+        keyHook.unhook();
+
         windowFinder.interrupt();
         overlayPosition.interrupt();
         autoInteract.interrupt();

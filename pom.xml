@@ -18,6 +18,11 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -34,6 +39,7 @@
             <artifactId>ui-automation</artifactId>
             <version>0.5.1-SNAPSHOT</version>
         </dependency>
+
     </dependencies>
 
 </project>
