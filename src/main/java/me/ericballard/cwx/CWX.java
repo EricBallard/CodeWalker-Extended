@@ -1,10 +1,11 @@
 package me.ericballard.cwx;
 
+import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.stage.Stage;
 import me.ericballard.cwx.data.Data;
 import me.ericballard.cwx.gui.GUI;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import me.ericballard.cwx.threads.AutoInteract;
 import me.ericballard.cwx.threads.OverlayPosition;
 import me.ericballard.cwx.threads.WindowFinder;
 
@@ -13,7 +14,10 @@ public class CWX extends Application {
 
     // Threads
     public static final WindowFinder windowFinder = new WindowFinder();
+
     public static final OverlayPosition overlayPosition = new OverlayPosition();
+
+    public static final AutoInteract autoInteract = new AutoInteract();
 
     // Native Hooks
 
@@ -48,6 +52,7 @@ public class CWX extends Application {
         Platform.exit();
         windowFinder.interrupt();
         overlayPosition.interrupt();
+        autoInteract.interrupt();
 
         System.out.println("CWX | Stopped");
         System.exit(1);

@@ -1,6 +1,5 @@
 package me.ericballard.cwx.threads;
 
-import com.sun.jna.platform.DesktopWindow;
 import com.sun.jna.platform.WindowUtils;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.Win32Exception;
@@ -30,12 +29,9 @@ public class OverlayPosition extends Thread {
             final Stage gui = GUI.get();
 
             if (gui != null) {
-                DesktopWindow walker = Apps.getWindow(true);
-                DesktopWindow editor = Apps.getWindow(false);
+                final WinDef.HWND wHandle = Apps.getHandle(true), eHandle = Apps.getHandle(false);
 
-                if (walker != null && editor != null) {
-                    final WinDef.HWND wHandle = walker.getHWND(), eHandle = editor.getHWND();
-
+                if (wHandle != null && eHandle != null) {
                     // Window bounds
                     Rectangle wBounds, eBounds;
 

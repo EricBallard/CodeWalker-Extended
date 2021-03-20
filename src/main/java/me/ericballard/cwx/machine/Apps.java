@@ -1,104 +1,118 @@
 package me.ericballard.cwx.machine;
 
-import com.sun.jna.platform.DesktopWindow;
-import com.sun.jna.platform.WindowUtils;
-import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.WinDef.HWND;
+import me.ericballard.cwx.CWX;
+import mmarquee.automation.AutomationException;
+import mmarquee.automation.controls.AutomationBase;
+import mmarquee.automation.controls.Window;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class Apps {
 
-    private static DesktopWindow walker, editor;
+    private static Window walker, editor;
 
-    public static DesktopWindow getWindow(boolean codeWalker) {
+    private static HWND walkerHandle, editorHandle;
+
+    public static Window getWindow(boolean codeWalker) {
         if (codeWalker ? walker == null : editor == null)
             findWindow(codeWalker);
+
         return codeWalker ? walker : editor;
     }
 
-    public static void resetEditor() { editor = null; }
+    public static HWND getHandle(boolean codeWalker) {
+        return codeWalker ? walkerHandle : editorHandle;
+    }
 
-    public static boolean isClosed() { return walker != null && !User32.INSTANCE.IsWindow(walker.getHWND()); }
+    public static void resetEditor() {
+        editor = null;
+    }
+
+    public static boolean isClosed() {
+        return walker != null && !User32.INSTANCE.IsWindow(walkerHandle);
+    }
 
     private static void findWindow(boolean codeWalker) {
         //System.out.println("CWX | Searching for window (" + (codeWalker ? "CodeWalker" : "Editor") + ")");
 
-        // Iterate windows
-        for (DesktopWindow desktopWindow : WindowUtils.getAllWindows(true)) {
-            // Title
-            final String title = desktopWindow.getTitle();
+        if (!codeWalker) {
+            // Find editor window
+            List<AutomationBase> children = null;
 
-            //
-            if (codeWalker ? title.equals("CodeWalker") : title.contains("- CodeWalker")) {
-                // Cache game window and obtain handle
-                HWND hwnd = (codeWalker ? (walker = desktopWindow).getHWND()
-                        : (editor = desktopWindow).getHWND());
+            try {
+                children = walker.getChildren(false);
 
-                // Failed to get handle?
-                if (hwnd == null)
-                    continue;
+                for (AutomationBase ab : children) {
+                    if (ab instanceof Window) {
+                        final Window window = (Window) ab;
 
-                // Success - Ensure window is visible and on top
-                User32.INSTANCE.ShowWindow(hwnd, 9);
-                User32.INSTANCE.SetForegroundWindow(hwnd);
+                        final HWND hwnd = window.getNativeWindowHandle();
+                        final String name = window.getName();
 
-                //System.out.println("CWX | Found window! (" + codeWalker + ")");
-                break;
+                        if (hwnd == null || name == null)
+                            continue;
+                        else if (name.contains("CodeWalker")) {
+                            // Cache window and handle
+                            editorHandle = hwnd;
+                            editor = window;
+
+                            System.out.println("CWX | Found Project Editor!");
+                            break;
+                        }
+                    }
+                }
+            } catch (AutomationException ignored) {
             }
+            return;
         }
-    }
 
-    public static int getTitleBarHeight(Rectangle bounds) {
-         /*
-         Identify  the height of window title bar
-
-         When user's mouse is within title bar bounds we want to update position
-         for a more frequently (as it's likely the user could be re-sizing)
-         to for a more seamless, native, effect
-
-          You can check for the native Win32 event but it looks
-          like it still requires recursive checking
-        */
-
-        Robot robot;
+        // Iterate windows
+        List<Window> windows = null;
 
         try {
-            robot = new Robot();
-        } catch (AWTException e) {
-            //TODO
+            windows = Automation.get().getDesktopWindows();
+        } catch (AutomationException e) {
+            //TODO -handle + dialog?
             e.printStackTrace();
-            return -1;
+            return;
         }
 
-        final int x = (int) (bounds.getX() + bounds.width / 1.5),
-                y = (int) bounds.getY() + 1;
+        // Find window via automation api (Grants native hwnd + attached process for uiautomation)
+        for (Window window : windows) {
+            try {
+                final String title = window.getName();
 
-        int tempY = y, matchingPixels = 0;
-        Color c = robot.getPixelColor(x, y);
+                if (title.equals("CodeWalker")) {
+                    HWND hwnd = window.getNativeWindowHandle();
 
-        while (!Thread.interrupted()) {
-            tempY += 1;
+                    // Failed to get handle?
+                    if (hwnd == null)
+                        continue;
 
-            if (robot.getPixelColor(x, tempY).equals(c)) {
-                matchingPixels += 1;
-            } else {
-                if (matchingPixels > 1)
+                    // Cache window and handle
+                    walkerHandle = hwnd;
+                    walker = window;
+
+                    // Success - Ensure window is visible and on top
+                    //User32.INSTANCE.ShowWindow(hwnd, 9);
+                    //User32.INSTANCE.SetForegroundWindow(hwnd);
+                    System.out.println("CWX | Found CodeWalker...");
+                    CWX.autoInteract.start();
                     break;
-                else
-                    tempY = y;
+                }
+            } catch (AutomationException ignored) {
             }
         }
-
-        int barHeight = matchingPixels + 2;
-        System.out.println("CWX | Detected Title Bar Height: " + barHeight);
-        return barHeight;
     }
 
+
+    public static String path = "C:\\Users\\Desktop\\Desktop\\CW_dev\\";
+
     public static boolean openCodeWalker() {
-        final String path = "C:\\Users\\Desktop\\Desktop\\CW_dev\\";
         ProcessBuilder pb = new ProcessBuilder(path + "CodeWalker.exe");
         pb.directory(new File(path));
 
@@ -110,6 +124,7 @@ public class Apps {
             return false;
         }
 
+        //Input.init();
         return true;
     }
 }

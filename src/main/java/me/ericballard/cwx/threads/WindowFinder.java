@@ -46,7 +46,7 @@ public class WindowFinder extends Thread {
 
                     if (Data.settings.saveWindowPosAndSize && Data.settings.wBounds != null) {
                         final Rectangle wBounds = Data.settings.wBounds;
-                        User32.INSTANCE.MoveWindow(Apps.getWindow(true).getHWND(), wBounds.x, wBounds.y, wBounds.width, wBounds.height, true);
+                        User32.INSTANCE.MoveWindow(Apps.getHandle(true), wBounds.x, wBounds.y, wBounds.width, wBounds.height, true);
                         System.out.println("CWX |Applied window position and size to CodeWalker");
                     }
 
@@ -77,7 +77,7 @@ public class WindowFinder extends Thread {
 
                     if (Data.settings.saveWindowPosAndSize && Data.settings.eBounds != null) {
                         final Rectangle eBounds = Data.settings.eBounds;
-                        User32.INSTANCE.MoveWindow(Apps.getWindow(false).getHWND(), eBounds.x, eBounds.y, eBounds.width, eBounds.height, true);
+                        User32.INSTANCE.MoveWindow(Apps.getHandle(false), eBounds.x, eBounds.y, eBounds.width, eBounds.height, true);
                         System.out.println("CWX |Applied window position and size to Editor");
                     }
                     continue;
