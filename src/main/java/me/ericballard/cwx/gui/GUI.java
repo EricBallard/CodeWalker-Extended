@@ -46,9 +46,10 @@ public class GUI {
 
         // Init scene and set to transparent
         Scene scene = new Scene(root);
+        scene.setFill(Color.TRANSPARENT);
+
         childStage.setScene(scene);
         childStage.setOpacity(0.5);
-        scene.setFill(Color.TRANSPARENT);
         childStage.initStyle(StageStyle.TRANSPARENT);
 
         // Bind parent w/h to child

@@ -5,23 +5,174 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.web.WebView?>
 
-<GridPane fx:id="gridPane" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ericballard.cwx.gui.Controller">
+<GridPane fx:id="gridPane" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: rgba(255, 255, 255, 0.0);" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.ericballard.cwx.gui.Controller">
    <columnConstraints>
-      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="5.0" />
-      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="128.0" />
-      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="1.0" />
+      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints valignment="BOTTOM" vgrow="ALWAYS" />
       <RowConstraints maxHeight="128.0" valignment="CENTER" vgrow="ALWAYS" />
-      <RowConstraints percentHeight="5.0" valignment="CENTER" vgrow="ALWAYS" />
    </rowConstraints>
    <children>
-      <ImageView fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <image>
-            <Image url="@icon.png" />
-         </image>
-      </ImageView>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" height="100.0" opacity="0.75" stroke="BLACK" strokeType="INSIDE" width="115.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <fill>
+            <LinearGradient endX="1.0" endY="1.0">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.44736841320991516" green="0.07870370149612427" blue="0.4227907657623291" />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="0.10450000315904617" green="0.32725000381469727" blue="0.550000011920929" />
+                     </color>
+                  </Stop>
+               </stops>
+            </LinearGradient>
+         </fill>
+      </Rectangle>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" height="300.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="450.0" GridPane.columnIndex="1">
+         <fill>
+            <LinearGradient endX="1.0" endY="1.0">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.44736841320991516" green="0.07870370149612427" blue="0.4227907657623291" />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="0.10999999940395355" green="0.33000001311302185" blue="0.550000011920929" />
+                     </color>
+                  </Stop>
+               </stops>
+            </LinearGradient>
+         </fill>
+      </Rectangle>
+      <GridPane maxHeight="300.0" maxWidth="450.0" GridPane.columnIndex="1">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <WebView fx:id="webView" maxHeight="290.0" maxWidth="440.0" minHeight="-1.0" minWidth="-1.0" opacity="0.0" prefHeight="-1.0" prefWidth="-1.0" />
+         </children>
+      </GridPane>
+      <GridPane maxWidth="450.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="100.0" stroke="BLACK" strokeType="INSIDE" width="100.0">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="1.0">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.30000001192092896" green="0.20399999618530273" blue="0.20399999618530273" opacity="0.0" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="100.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="100.0" GridPane.columnIndex="1">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="1.0">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.30000001192092896" green="0.20399999618530273" blue="0.20399999618530273" opacity="0.0" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="100.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="100.0" GridPane.columnIndex="2">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="1.0">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.30000001192092896" green="0.20399999618530273" blue="0.20399999618530273" opacity="0.0" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="100.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="100.0" GridPane.columnIndex="3">
+               <fill>
+                  <RadialGradient centerX="0.5" centerY="0.5" radius="1.0">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.30000001192092896" green="0.20399999618530273" blue="0.20399999618530273" opacity="0.0" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Rectangle>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@menu_open.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="50.0" fitWidth="50.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+               <image>
+                  <Image url="@undo.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="50.0" fitWidth="50.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@search.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="50.0" fitWidth="50.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+               <image>
+                  <Image url="@settings.png" />
+               </image>
+            </ImageView>
+         </children>
+      </GridPane>
    </children>
 </GridPane>

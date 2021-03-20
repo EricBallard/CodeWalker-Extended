@@ -69,10 +69,11 @@ public class OverlayPosition extends Thread {
                     }
 
                     // Detect window title bar height
-                    if (barHeight == -1) {
-                        barHeight = Apps.getTitleBarHeight(eBounds);
-                        continue;
-                    }
+                    //TODO
+//                    if (barHeight == -1) {
+//                        barHeight = Apps.getTitleBarHeight(eBounds);
+//                        continue;
+//                    }
 
                     final int w = eBounds.width,
                             h = eBounds.height;
@@ -110,7 +111,7 @@ public class OverlayPosition extends Thread {
                         if (!gui.isShowing())
                             Platform.runLater(gui::show);
                     } else if (gui.isShowing()) {
-                        Platform.runLater(gui::hide);
+                       // Platform.runLater(gui::hide);
                     }
 
                     // Position stage over editor window
