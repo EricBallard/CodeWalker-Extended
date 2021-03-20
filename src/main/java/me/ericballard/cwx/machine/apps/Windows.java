@@ -1,42 +1,48 @@
-package me.ericballard.cwx.machine;
+package me.ericballard.cwx.machine.apps;
 
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.WinDef.HWND;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
 import me.ericballard.cwx.CWX;
 import mmarquee.automation.AutomationException;
 import mmarquee.automation.controls.AutomationBase;
 import mmarquee.automation.controls.Window;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-public class Apps {
+public class Windows {
 
     private static Window walker, editor;
-
-    private static HWND walkerHandle, editorHandle;
-
-    public static Window getWindow(boolean codeWalker) {
-        if (codeWalker ? walker == null : editor == null)
-            findWindow(codeWalker);
-
-        return codeWalker ? walker : editor;
-    }
-
-    public static HWND getHandle(boolean codeWalker) {
-        return codeWalker ? walkerHandle : editorHandle;
-    }
 
     public static void resetEditor() {
         editor = null;
     }
 
-    public static boolean isClosed() {
-        return walker != null && !User32.INSTANCE.IsWindow(walkerHandle);
+    public static boolean isMinimized(WinDef.HWND handle) {
+        // Get visibility state
+        WinUser.WINDOWPLACEMENT placement = new WinUser.WINDOWPLACEMENT();
+        User32.INSTANCE.GetWindowPlacement(handle, placement);
+
+        switch (placement.showCmd) {
+            case WinUser.SW_SHOWMINIMIZED:
+            case WinUser.SW_FORCEMINIMIZE:
+            case WinUser.SW_MINIMIZE:
+            case WinUser.SW_RESTORE:
+                return true;
+            default:
+                break;
+        }
+        return false;
     }
 
-    private static void findWindow(boolean codeWalker) {
+    public static Window get(boolean codeWalker) {
+        if (codeWalker ? walker == null : editor == null)
+            find(codeWalker);
+
+        return codeWalker ? walker : editor;
+    }
+
+    private static void find(boolean codeWalker) {
         //System.out.println("CWX | Searching for window (" + (codeWalker ? "CodeWalker" : "Editor") + ")");
 
         if (!codeWalker) {
@@ -50,14 +56,14 @@ public class Apps {
                     if (ab instanceof Window) {
                         final Window window = (Window) ab;
 
-                        final HWND hwnd = window.getNativeWindowHandle();
+                        final WinDef.HWND hwnd = window.getNativeWindowHandle();
                         final String name = window.getName();
 
                         if (hwnd == null || name == null)
                             continue;
                         else if (name.contains("CodeWalker")) {
                             // Cache window and handle
-                            editorHandle = hwnd;
+                            Apps.setHandle(false, hwnd);
                             editor = window;
 
                             System.out.println("CWX | Found Project Editor!");
@@ -87,14 +93,14 @@ public class Apps {
                 final String title = window.getName();
 
                 if (title.equals("CodeWalker")) {
-                    HWND hwnd = window.getNativeWindowHandle();
+                    WinDef.HWND hwnd = window.getNativeWindowHandle();
 
                     // Failed to get handle?
                     if (hwnd == null)
                         continue;
 
                     // Cache window and handle
-                    walkerHandle = hwnd;
+                    Apps.setHandle(true, hwnd);
                     walker = window;
 
                     // Success - Ensure window is visible and on top
@@ -107,24 +113,5 @@ public class Apps {
             } catch (AutomationException ignored) {
             }
         }
-    }
-
-
-    public static String path = "C:\\Users\\Desktop\\Desktop\\CW_dev\\";
-
-    public static boolean openCodeWalker() {
-        ProcessBuilder pb = new ProcessBuilder(path + "CodeWalker.exe");
-        pb.directory(new File(path));
-
-        try {
-            pb.start();
-        } catch (IOException e) {
-            //TODO - dialog
-            System.out.println("CWX | Failed to open CodeWalker.exe");
-            return false;
-        }
-
-        //Input.init();
-        return true;
     }
 }

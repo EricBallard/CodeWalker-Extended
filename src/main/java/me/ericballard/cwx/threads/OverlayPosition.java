@@ -6,22 +6,24 @@ import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import me.ericballard.cwx.CWX;
 import me.ericballard.cwx.data.Data;
 import me.ericballard.cwx.gui.GUI;
-import me.ericballard.cwx.machine.Apps;
+import me.ericballard.cwx.machine.apps.Apps;
+import me.ericballard.cwx.machine.apps.Windows;
 
-import java.awt.*;
+import java.awt.MouseInfo;
+import java.awt.Rectangle;
+import java.awt.Point;
+
 
 public class OverlayPosition extends Thread {
 
-    private boolean userIsHoverinControls = false;
-
-    private int barHeight = -1;
+    //TODO re-write with native hooks
 
     @Override
     public void run() {
         System.out.println("CWX | Overlay Position - Started");
+        boolean userIsHoverinControls = false;
 
         // While app hasn't been closed
         while (!isInterrupted()) {
@@ -33,24 +35,24 @@ public class OverlayPosition extends Thread {
 
                 if (wHandle != null && eHandle != null) {
                     // Window bounds
-                    Rectangle wBounds, eBounds;
+                    Rectangle wBounds = null, eBounds;
 
                     try {
                         wBounds = WindowUtils.getWindowLocationAndSize(wHandle);
                         eBounds = WindowUtils.getWindowLocationAndSize(eHandle);
                     } catch (Win32Exception e) {
-                        System.out.println("CWX | Window Closed - " + e.getMessage());
+                        String closedWinodw = (wBounds == null ? "CodeWalker" : "Editor");
+                        System.out.println("CWX | (" + closedWinodw + ") Window Closed - " + e.getMessage());
+
                         Platform.runLater(() -> GUI.get().hide());
-                        Apps.resetEditor();
+                        Windows.resetEditor();
 
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ignored) {
-                            break;
-                        }
-
-                        synchronized (CWX.windowFinder) {
-                            CWX.windowFinder.notify();
+                        synchronized (this) {
+                            try {
+                                this.wait();
+                            } catch (InterruptedException ignored) {
+                                break;
+                            }
                         }
                         continue;
                     }
@@ -64,12 +66,6 @@ public class OverlayPosition extends Thread {
                         Data.settings.eBounds = eBounds;
                     }
 
-                    // Detect window title bar height
-                    //TODO
-//                    if (barHeight == -1) {
-//                        barHeight = Apps.getTitleBarHeight(eBounds);
-//                        continue;
-//                    }
 
                     final int w = eBounds.width,
                             h = eBounds.height;
@@ -107,7 +103,7 @@ public class OverlayPosition extends Thread {
                         if (!gui.isShowing())
                             Platform.runLater(gui::show);
                     } else if (gui.isShowing()) {
-                       // Platform.runLater(gui::hide);
+                        // Platform.runLater(gui::hide);
                     }
 
                     // Position stage over editor window
@@ -120,15 +116,10 @@ public class OverlayPosition extends Thread {
 
                     // Detect if mouse is within window title bar
                     final Point mousePos = MouseInfo.getPointerInfo().getLocation();
-                    final Rectangle barBounds = new Rectangle(eBounds.x, eBounds.y, w, barHeight);
 
-                    if (!(userIsHoverinControls = barBounds.contains(mousePos))) {
-                        // Not hovering title bar are we on outskirts of window?
-
-                        // NOTE: This works well for slow resizing but for quick, large-distance, resizing update is slightly chunky
-                        userIsHoverinControls = eBounds.contains(mousePos) && !boundLimits.contains(mousePos);
-                        //System.out.println("HOVERING: " + userIsHoveringTitleBar);
-                    }
+                    // NOTE: This works well for slow resizing but for quick, large-distance, resizing update is slightly chunky
+                    userIsHoverinControls = eBounds.contains(mousePos) && !boundLimits.contains(mousePos);
+                    //System.out.println("HOVERING: " + userIsHoveringTitleBar);
                 }
             }
 

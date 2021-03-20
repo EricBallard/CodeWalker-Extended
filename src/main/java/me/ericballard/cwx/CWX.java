@@ -9,6 +9,8 @@ import me.ericballard.cwx.threads.AutoInteract;
 import me.ericballard.cwx.threads.OverlayPosition;
 import me.ericballard.cwx.threads.WindowFinder;
 
+import java.awt.*;
+
 // CodeWalker-Extended
 public class CWX extends Application {
 
@@ -20,11 +22,79 @@ public class CWX extends Application {
     public static final AutoInteract autoInteract = new AutoInteract();
 
     // Native Hooks
+    public static boolean blockMouseInput = false, blockNextClick = false;
+
+//    private static final MouseHookManager hookManager = new MouseHookManager();
+//
+//    private static final MouseEventReceiver mouseHook = new MouseEventReceiver(hookManager) {
+//        @Override
+//        public boolean onMousePress(MouseButtonType mouseButtonType, WinDef.HWND hwnd, WinDef.POINT point) {
+//            if (windowFinder.isExplorerOpen) {
+//                final Point mousePos = MouseInfo.getPointerInfo().getLocation();
+//                Rectangle openButtonBounds = null;
+//
+//                try {
+//                    openButtonBounds = windowFinder.button.getBoundingRectangle().toRectangle();
+//                } catch (AutomationException ignored) {
+//                }
+//
+//                if (openButtonBounds.contains(mousePos)) {
+//                    System.out.println("Blocked click?");
+//                    blockNextClick = true;
+//                    return true;
+//                } else {
+//                    //System.out.println("POS: " + mousePos);
+//                    // System.out.println("BOUNDS: " + openButtonBounds);
+//                }
+//            }
+//
+//            return blockMouseInput;
+//        }
+//
+//        @Override
+//        public boolean onMouseRelease(MouseButtonType mouseButtonType, WinDef.HWND hwnd, WinDef.POINT point) {
+//            if (blockNextClick) {
+//                System.out.println("Blocked next click.");
+//
+//                    /*
+//                    Block click event to open project - cache associated project name + path
+//                    Manually invoke button after to complete action
+//                     */
+//                //TODO - check if file and path is not null
+//
+////                    new Thread(() -> {
+////                        try {
+////                            Thread.sleep(500);
+////                            windowFinder.setExplorerClosed();
+////                        } catch (InterruptedException ignored) {
+////                        }
+////                    }).start();
+//                return true;
+//            }
+//
+//            blockNextClick = false;
+//            return blockMouseInput;
+//        }
+//
+//        @Override
+//        public boolean onMouseScroll(boolean b, WinDef.HWND hwnd, WinDef.POINT point) {
+//            return blockMouseInput;
+//        }
+//
+//        @Override
+//        public boolean onMouseMove(WinDef.HWND hwnd, WinDef.POINT point) {
+//            return blockMouseInput;
+//        }
+//    };
+//
 
     // Start of Application
     public static void main(String... args) {
         //Start of Application
         System.out.println("CWX | Started");
+
+        // Init global mouse hook (Temporary blocks to ensure perfect automation)
+       // hookManager.hook(mouseHook);
 
         // Init thread to identify CodeWalker windows
         windowFinder.start();
@@ -47,6 +117,7 @@ public class CWX extends Application {
 
     // Closes threads, etc
     public static void close() {
+       // hookManager.unhook(mouseHook);
         Data.save();
 
         Platform.exit();
